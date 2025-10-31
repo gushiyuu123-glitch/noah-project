@@ -379,3 +379,31 @@ canvas#ch1-bg {
     letter-spacing: 0.05em;
   }
 }
+/* =====================================================
+   📱 章タイトル視認性補正（スマホ限定）
+   ===================================================== */
+@media (max-width: 768px) {
+
+  /* 🔹 通常：暗め背景用（白文字＋影） */
+  .chapter-title,
+  .chapter-title-fixed {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    letter-spacing: 0.06em;
+  }
+
+  /* 🔸 明るめ背景章（Chapter6・Epilogueなど）用 */
+  body.light-mode .chapter-title,
+  body.light-mode .chapter-title-fixed {
+    color: rgba(30, 30, 30, 0.85) !important;
+    text-shadow: none;
+  }
+
+  /* タイトル周辺の余白を確保（被り防止） */
+  .chapter-title,
+  .chapter-title-fixed {
+    margin-top: 8vh !important;
+    margin-bottom: 4vh !important;
+    text-align: center;
+  }
+}
