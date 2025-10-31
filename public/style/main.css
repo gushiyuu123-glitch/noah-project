@@ -275,3 +275,20 @@ canvas#noah-bg {
     filter: brightness(0.9) contrast(1.05);
   }
 }
+/* === モバイルタップ補正 === */
+.enter-btn {
+  position: relative;
+  z-index: 9999 !important; /* ← 最前面へ */
+}
+
+canvas#noah-bg,
+.bg-image {
+  pointer-events: none !important; /* ← クリック/タップを完全無効化 */
+  touch-action: none !important;
+}
+@media (max-width: 768px) {
+  .enter-btn {
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+  }
+}
