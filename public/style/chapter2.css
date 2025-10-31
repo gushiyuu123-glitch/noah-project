@@ -285,3 +285,62 @@ body.ready .chapter-text {
     margin-bottom: 3em;
   }
 }
+/* =====================================================
+   📱 NOAH – Smart Responsive System (全章共通)
+   ===================================================== */
+
+@media (max-width: 768px) {
+  /* ===== 基本レイアウト調整 ===== */
+  body {
+    line-height: 1.9;
+    font-size: 0.95rem;
+    overflow-x: hidden;
+  }
+
+  /* 背景 */
+  .bg-image,
+  .memory-bg,
+  .bg-lab {
+    background-size: contain !important; /* ← coverから変更 */
+    background-position: center center !important;
+    filter: brightness(0.9) contrast(1.05) blur(1.2px);
+  }
+
+  /* ===== 章タイトル ===== */
+  .chapter-title-fixed {
+    position: relative !important; /* ← fixed解除 */
+    top: auto !important;
+    text-align: center;
+    margin-top: 8vh;
+    margin-bottom: 4vh;
+    font-size: 1.2rem !important;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  /* ===== 本文 ===== */
+  .chapter-text,
+  .text-box {
+    max-width: 90%;
+    padding: 10vh 5% 16vh;
+    font-size: 0.95rem;
+    line-height: 1.9;
+    background: rgba(255,255,255,0.35);
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+  }
+
+  /* ===== ノアのセリフ ===== */
+  .noah {
+    font-size: 0.92rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* ===== 次章リンク ===== */
+  .next-chapter {
+    display: block;
+    text-align: center;
+    margin: 6vh auto 10vh;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+  }
+}
