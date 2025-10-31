@@ -292,3 +292,34 @@ canvas#noah-bg,
     pointer-events: auto !important;
   }
 }
+/* ===============================
+   🧭 ボタンのクリック補正
+   =============================== */
+
+/* Canvas・背景を完全に無効化（タップ判定を消す） */
+canvas#noah-bg,
+.bg-image {
+  pointer-events: none !important;
+  touch-action: none !important;
+}
+
+/* ボタンを最前面レイヤーへ */
+.enter-btn {
+  position: fixed;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* スマホでも確実に反応 */
+@media (max-width: 768px) {
+  .enter-btn {
+    z-index: 9999 !important;
+    font-size: 1rem;
+    bottom: 14vh;
+    letter-spacing: 0.05em;
+  }
+}
