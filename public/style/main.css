@@ -1,23 +1,46 @@
+/* =====================================================
+   🌌 NOAH | Intro Scene – Final Responsive Edition
+   Designed & refined by Noa × Yuto
+   ===================================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1&family=Cormorant+Garamond:wght@500&display=swap');
 
+/* === Reset === */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   background: radial-gradient(circle at 50% 50%, #0b0b0f 0%, #000 100%);
   color: #e9e9e9;
   font-family: "Shippori Mincho B1", serif;
-  overflow: hidden;
+  overflow-x: hidden;
   height: 100vh;
+  line-height: 2.2;
 }
 
-/* === Canvas背景 === */
+/* =====================================================
+   背景レイヤー
+   ===================================================== */
+.bg-image {
+  position: fixed;
+  inset: 0;
+  background: url('/assets/bg_intro.jpg') center/cover no-repeat;
+  filter: brightness(0.6) contrast(1.1) blur(3px);
+  z-index: -2;
+  pointer-events: none;
+}
+
 canvas#noah-bg {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
-/* === タイトル演出 === */
+/* =====================================================
+   タイトル演出
+   ===================================================== */
 .intro-title span {
   position: fixed;
   font-family: "Cormorant Garamond", serif;
@@ -41,17 +64,20 @@ canvas#noah-bg {
   to { opacity: 0; filter: blur(4px); }
 }
 
-/* === テキスト === */
+/* =====================================================
+   序文テキスト
+   ===================================================== */
 .intro-text {
   position: relative;
   z-index: 1;
   width: 60%;
   margin: 0 auto;
-  padding-top: 30vh;
+  padding: 30vh 0 28vh;
   line-height: 2.2;
   font-size: 1.1rem;
   opacity: 0;
   animation: fadeIn 4s ease 5s forwards;
+  text-align: justify;
 }
 
 .intro-text h2 {
@@ -64,9 +90,13 @@ canvas#noah-bg {
 @keyframes fadeIn {
   to { opacity: 1; transform: none; }
 }
+
+/* =====================================================
+   遷移ボタン（白いノイズへ進む）
+   ===================================================== */
 .enter-btn {
   position: absolute;
-  bottom: 12vh;
+  bottom: 10vh;
   left: 50%;
   transform: translateX(-50%);
   font-family: "Cormorant Garamond", serif;
@@ -75,36 +105,34 @@ canvas#noah-bg {
   letter-spacing: 0.08em;
   cursor: pointer;
   text-align: center;
+  z-index: 10;
   opacity: 0;
   animation: fadeInBtn 3s ease 6s forwards, pulse 6s ease-in-out infinite 9s;
   transition: all 0.6s ease;
 }
 
+@keyframes fadeInBtn { to { opacity: 0.7; } }
+
 /* 光のゆらぎ（常時） */
 @keyframes pulse {
   0%, 100% {
-    text-shadow: 0 0 4px rgba(255,255,255,0.15), 0 0 8px rgba(255,255,255,0.1);
+    text-shadow: 0 0 4px rgba(255,255,255,0.15),
+                 0 0 8px rgba(255,255,255,0.1);
     opacity: 0.6;
   }
   50% {
-    text-shadow: 0 0 10px rgba(255,255,255,0.35), 0 0 20px rgba(255,255,255,0.25);
+    text-shadow: 0 0 10px rgba(255,255,255,0.35),
+                 0 0 20px rgba(255,255,255,0.25);
     opacity: 0.85;
   }
 }
 
-/* 出現 */
-@keyframes fadeInBtn {
-  to { opacity: 0.7; }
-}
-
-/* 背後に“淡い光の輪” */
+/* 光の輪 */
 .enter-btn::before {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 160px;
-  height: 160px;
+  top: 50%; left: 50%;
+  width: 160px; height: 160px;
   transform: translate(-50%, -50%);
   background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
   border-radius: 50%;
@@ -118,12 +146,11 @@ canvas#noah-bg {
   50% { opacity: 0.4; transform: translate(-50%, -50%) scale(1.1); }
 }
 
-/* 下に淡い光ライン（常時流れる） */
+/* 下ライン */
 .enter-btn::after {
   content: "";
   position: absolute;
-  bottom: -6px;
-  left: 50%;
+  bottom: -6px; left: 50%;
   transform: translateX(-50%);
   width: 65%;
   height: 1px;
@@ -138,52 +165,33 @@ canvas#noah-bg {
   100% { opacity: 0.2; transform: translateX(-40%) scaleX(0.9); }
 }
 
-/* ホバー時（強調） */
 .enter-btn:hover {
   color: rgba(255, 255, 255, 0.95);
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.6);
   transform: translateX(-50%) translateY(-3px) scale(1.05);
 }
 
-/* === 背景画像 === */
-.bg-image {
-  position: fixed;
-  inset: 0;
-  background: url('/assets/bg_intro.jpg') center/cover no-repeat;
-  filter: brightness(0.6) contrast(1.1) blur(3px);
-  z-index: -2;
-}
-
-/* === Canvas光粒は前景層 === */
-canvas#noah-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  mix-blend-mode: screen;
-  opacity: 0.8;
-}
-canvas#noah-bg {
-  pointer-events: none;
-}
-/* ===============================
-   📱 Responsive (スマホ最適化)
-   =============================== */
-@media screen and (max-width: 768px) {
+/* =====================================================
+   📱 Responsive – スマホ最適化
+   ===================================================== */
+@media (max-width: 768px) {
   body {
     height: auto;
     overflow-y: auto;
-    background: radial-gradient(circle at 50% 50%, #0b0b0f 0%, #000 100%);
+    line-height: 1.9;
+    font-size: 0.95rem;
   }
 
-  /* === タイトル === */
+  /* タイトル */
   .intro-title span {
-    font-size: 3.2rem; /* ← 9rem → 3.2rem */
+    font-size: 3rem;
   }
 
-  /* === テキスト === */
+  /* テキスト */
   .intro-text {
     width: 88%;
     padding-top: 22vh;
+    padding-bottom: 22vh;
     font-size: 0.95rem;
     line-height: 1.9;
     text-align: left;
@@ -194,23 +202,25 @@ canvas#noah-bg {
     margin-bottom: 0.8em;
   }
 
-  /* === 背景 === */
+  /* 背景 */
   .bg-image {
-    filter: brightness(0.65) contrast(1.05) blur(1.6px);
-    background-attachment: scroll;
+    filter: brightness(0.7) contrast(1.05) blur(1.6px);
+    background-size: cover;
+    background-position: center;
   }
 
-  /* === Canvas === */
+  /* Canvas */
   canvas#noah-bg {
     opacity: 0.6;
     mix-blend-mode: lighten;
   }
 
-  /* === ボタン === */
+  /* ボタン */
   .enter-btn {
-    bottom: 15vh;
+    bottom: 12vh;
     font-size: 1rem;
     letter-spacing: 0.05em;
+    z-index: 20;
   }
   .enter-btn::before {
     width: 120px;
@@ -225,101 +235,9 @@ canvas#noah-bg {
     transform: translateX(-50%) translateY(-2px) scale(1.03);
   }
 
-  /* === アニメーション軽量化 === */
-  @keyframes gather {
-    0% { opacity: 0; transform: scale(1.1); }
-    100% { opacity: 1; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); }
-  }
-}
-/* ===============================
-   📱 SmartPhone Optimization
-   =============================== */
-@media (max-width: 768px) {
-  body {
-    line-height: 1.9;
-    font-size: 0.95rem;
-    overflow-x: hidden;
-  }
-
-  .chapter-text {
-    max-width: 92%;
-    padding: 10vh 5% 12vh;
-    font-size: 0.95rem;
-  }
-
-  .chapter-title,
-  .chapter-title-fixed {
-    font-size: 1.5rem !important;
-    top: 8vh;
-  }
-
-  .intro-title span {
-    font-size: 2.2rem !important;
-  }
-
-  .intro-sub {
-    font-size: 0.85rem;
-  }
-
-  .next-chapter {
-    font-size: 1rem;
-    margin-top: 3rem;
-  }
-
-  /* 背景トリミング防止 */
-  .bg-image,
-  .memory-bg,
-  .bg-lab {
+  /* 背景トリミング防止（containに変更可） */
+  .bg-image {
+    background-size: cover !important;
     background-position: center center !important;
-    background-size: contain !important; /* cover → contain */
-    filter: brightness(0.9) contrast(1.05);
-  }
-}
-/* === モバイルタップ補正 === */
-.enter-btn {
-  position: relative;
-  z-index: 9999 !important; /* ← 最前面へ */
-}
-
-canvas#noah-bg,
-.bg-image {
-  pointer-events: none !important; /* ← クリック/タップを完全無効化 */
-  touch-action: none !important;
-}
-@media (max-width: 768px) {
-  .enter-btn {
-    z-index: 9999 !important;
-    pointer-events: auto !important;
-  }
-}
-/* ===============================
-   🧭 ボタンのクリック補正
-   =============================== */
-
-/* Canvas・背景を完全に無効化（タップ判定を消す） */
-canvas#noah-bg,
-.bg-image {
-  pointer-events: none !important;
-  touch-action: none !important;
-}
-
-/* ボタンを最前面レイヤーへ */
-.enter-btn {
-  position: fixed;
-  bottom: 12vh;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999 !important;
-  pointer-events: auto !important;
-  cursor: pointer;
-}
-
-/* スマホでも確実に反応 */
-@media (max-width: 768px) {
-  .enter-btn {
-    z-index: 9999 !important;
-    font-size: 1rem;
-    bottom: 14vh;
-    letter-spacing: 0.05em;
   }
 }
