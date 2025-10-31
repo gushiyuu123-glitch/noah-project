@@ -1,0 +1,323 @@
+/* =====================================================
+   🌌 NOAH - 第4章「歪み」
+   Optimized Visual Style by Noa × Yuto
+   ===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1&family=Cormorant+Garamond:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap');
+
+/* === 共通設定 === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --violet: #a764ff;
+  --violet-soft: #c493ff;
+  --text-main: #eaeaff;
+  --bg-dark: #050505;
+  --blur-strength: 8px;
+  --transition-speed: 0.4s;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-main);
+  font-family: "Shippori Mincho B1", serif;
+  overflow-x: hidden;
+  line-height: 2;
+}
+
+/* =====================================================
+   背景 - 歪んだデータの残響
+   ===================================================== */
+.bg-image {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.05) 45%, rgba(0, 0, 0, 0.6) 100%), /* ← 少し明るく */
+    radial-gradient(circle at 50% 50%, rgba(110,60,190,0.25), rgba(10,10,25,0.8)), /* ← 紫を少し明るめに */
+    url("/assets/bg_ch4_distortion.jpg") center/cover no-repeat;
+  mix-blend-mode: lighten;
+  filter: brightness(1.1) contrast(1.15) saturate(1.15) blur(2.5px); /* ← 明るさ＋彩度アップ */
+  opacity: 0;
+  transition: opacity 3s ease;
+  z-index: -2;
+  animation: distortionPulse 10s ease-in-out infinite alternate;
+}
+
+.bg-image.visible {
+  opacity: 1;
+}
+
+@keyframes distortionPulse {
+  0% {
+    filter: brightness(0.85) contrast(1.05) saturate(1.1) blur(3.5px);
+  }
+  50% {
+    filter: brightness(1.15) contrast(1.4) saturate(1.3) blur(2.5px);
+  }
+  100% {
+    filter: brightness(0.95) contrast(1.1) saturate(1.15) blur(3px);
+  }
+}
+
+/* =====================================================
+   歪みノイズ Canvas
+   ===================================================== */
+#distortion-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+/* =====================================================
+   イントロ演出（波紋＋崩壊）
+   ===================================================== */
+#chapter-intro {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(0,0,0,1), rgba(0,0,0,0.9));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+  animation: introFade 8s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes introFade {
+  0%, 90% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+/* === タイトル（波紋＋崩壊） === */
+.intro-title {
+  display: flex;
+  gap: 0.15em;
+}
+
+.intro-title .char {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 4rem;
+  color: var(--violet);
+  text-shadow:
+    0 0 8px rgba(180,120,255,0.7),
+    0 0 20px rgba(220,160,255,0.4);
+  opacity: 0;
+  transform-origin: center;
+  animation: rippleIn 1.8s ease forwards, shatter 1s ease 2s forwards;
+}
+
+.intro-title .char:nth-child(1) { animation-delay: 0.3s, 2.1s; }
+.intro-title .char:nth-child(2) { animation-delay: 0.5s, 2.3s; }
+
+@keyframes rippleIn {
+  0% { opacity: 0; transform: scale(1.6) blur(6px); }
+  60% { opacity: 1; transform: scale(1) blur(0); }
+  100% { opacity: 1; }
+}
+
+@keyframes shatter {
+  0% { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  100% {
+    transform: translate(calc(-50px + 100px * var(--randX)),
+                        calc(-40px + 80px * var(--randY)))
+              rotate(calc(-20deg + 40deg * var(--randR)));
+    opacity: 0;
+  }
+}
+
+/* === サブタイトル === */
+.intro-sub {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.1rem;
+  color: rgba(200,180,255,0.8);
+  margin-top: 1.2em;
+  letter-spacing: 0.15em;
+  opacity: 0;
+  animation: fadeSub 1.8s ease 1.5s forwards;
+}
+@keyframes fadeSub { to { opacity: 1; } }
+
+/* =====================================================
+   固定タイトル
+   ===================================================== */
+.chapter-title-fixed {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.1rem;
+  color: rgba(180,160,255,0.4);
+  letter-spacing: 0.1em;
+  z-index: 2;
+}
+
+/* =====================================================
+   本文（背景＋フェード）
+   ===================================================== */
+.chapter-text {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 14vh 6% 12vh;
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeInText 2.2s ease 6.5s forwards;
+  color: var(--text-main);
+  background: rgba(15, 15, 25, 0.55);
+  backdrop-filter: blur(var(--blur-strength));
+  border-radius: 18px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+@keyframes fadeInText {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================
+   ノアのセリフ（暴走の兆し）
+   ===================================================== */
+.noah {
+  color: var(--violet-soft);
+  font-family: "Fira Code", monospace;
+  letter-spacing: 0.03em;
+  display: inline-block;
+  position: relative;
+  white-space: pre-wrap;
+  margin: 1.5em 0;
+  opacity: 0;
+  animation: fadeNoah 2s ease forwards;
+  text-shadow:
+    0 0 6px rgba(200, 140, 255, 0.6),
+    0 0 12px rgba(230, 120, 255, 0.4),
+    0 0 22px rgba(255, 100, 160, 0.2);
+}
+@keyframes fadeNoah { to { opacity: 1; } }
+
+/* =====================================================
+   次の章へ
+   ===================================================== */
+.next-chapter {
+  display: block;
+  text-align: center;
+  margin-top: 4em;
+  font-family: "Cormorant Garamond", serif;
+  color: rgba(200,200,255,0.6);
+  text-decoration: none;
+  transition: var(--transition-speed) ease;
+  letter-spacing: 0.08em;
+}
+.next-chapter:hover {
+  color: #fff;
+  text-shadow: 0 0 8px rgba(255,255,255,0.9);
+}
+
+/* =====================================================
+   クライマックス演出（Noah暴走）
+   ===================================================== */
+.climax-scene {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  filter: blur(20px) brightness(1.2) contrast(1.3);
+  transition: opacity 6s ease, filter 10s ease;
+  z-index: -1;
+  will-change: opacity, filter;
+}
+
+.climax-scene.visible {
+  opacity: 1;
+  filter: blur(0) brightness(1) contrast(1.1);
+}
+/* ===============================
+   📱 Responsive (スマホ最適化)
+   =============================== */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  /* === 背景 === */
+  .bg-image {
+    filter: brightness(0.9) contrast(1.1) saturate(1.1) blur(1.2px);
+    background-attachment: scroll;
+    background-position: center top;
+    animation: none; /* ← モバイルでは背景アニメ停止で軽量化 */
+  }
+
+  /* === イントロタイトル === */
+  .intro-title .char {
+    font-size: 2.2rem; /* ← 4rem → 2.2remに縮小 */
+    text-shadow:
+      0 0 4px rgba(180,120,255,0.6),
+      0 0 10px rgba(220,160,255,0.4);
+  }
+
+  .intro-sub {
+    font-size: 0.9rem;
+    margin-top: 0.8em;
+    letter-spacing: 0.1em;
+  }
+
+  /* === 固定タイトル === */
+  .chapter-title-fixed {
+    top: 1.6rem;
+    font-size: 1rem;
+    color: rgba(200,180,255,0.55);
+  }
+
+  /* === 本文 === */
+  .chapter-text {
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 10vh 6%;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    background: rgba(15,15,25,0.6);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 24px rgba(0,0,0,0.45);
+  }
+
+  /* === ノアのセリフ === */
+  .noah {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    text-shadow:
+      0 0 3px rgba(200,140,255,0.5),
+      0 0 6px rgba(255,150,220,0.25);
+    word-break: break-word;
+  }
+
+  /* === クライマックス演出 === */
+  .climax-scene {
+    filter: blur(10px) brightness(1.1) contrast(1.1);
+    transition: opacity 4s ease, filter 6s ease;
+  }
+  .climax-scene.visible {
+    filter: blur(0) brightness(1) contrast(1.05);
+  }
+
+  /* === 次章リンク === */
+  .next-chapter {
+    font-size: 1rem;
+    margin-top: 3em;
+    color: rgba(220,220,255,0.65);
+  }
+  .next-chapter:hover {
+    text-shadow: 0 0 5px rgba(255,255,255,0.7);
+  }
+}

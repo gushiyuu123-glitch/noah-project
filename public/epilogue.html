@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Epílogue | ノアの手記 — NOAH</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #0b0c10;
+  --ink: #e9e6e1;
+  --accent: #98a6ff;
+}
+
+/* === Reset & Base === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Shippori Mincho B1", serif;
+  line-height: 1.9;
+}
+
+/* === 背景映像 === */
+#bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+  filter: brightness(0.95) contrast(1.05) saturate(1.05);
+  z-index: -2;
+}
+
+/* === 音声案内 === */
+#soundMsg {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  color: rgba(200,200,200,0.7);
+  font-size: 0.9rem;
+  font-family: "Cormorant Garamond", serif;
+  background: rgba(0,0,0,0.35);
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  opacity: 0;
+  animation: fadeInMsg 2s ease forwards 3s;
+  z-index: 999;
+  user-select: none;
+}
+@keyframes fadeInMsg { to { opacity: 1; } }
+
+/* === Intro === */
+#intro {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  z-index: 100;
+  transition: opacity 3s ease;
+}
+.title-container {
+  text-align: center;
+  letter-spacing: 0.3em;
+  color: #e8e8e8;
+  position: relative;
+  z-index: 10;
+}
+#title {
+  font-size: 3.5rem;
+  font-family: "Cormorant Garamond", serif;
+  display: inline-block;
+}
+#title span {
+  display: inline-block;
+  opacity: 0;
+  transform: translate(var(--x, 0), var(--y, 0)) scale(2);
+  animation: gather 2.5s cubic-bezier(0.68,-0.6,0.32,1.6) forwards;
+}
+#title span:nth-child(1){--x:-120px;--y:-100px;animation-delay:0.2s;}
+#title span:nth-child(2){--x:140px; --y:-120px;animation-delay:0.4s;}
+#title span:nth-child(3){--x:-130px;--y:100px; animation-delay:0.6s;}
+#title span:nth-child(4){--x:150px; --y:80px;  animation-delay:0.8s;}
+@keyframes gather {
+  0%   { opacity:0; transform:translate(var(--x),var(--y)) scale(2); filter:blur(12px); }
+  70%  { opacity:1; transform:translate(0,0) scale(1);            filter:blur(2px); }
+  100% { opacity:1; filter:blur(0); }
+}
+#subtitle {
+  font-size: 1rem;
+  margin-top: -4rem;
+  opacity: 0;
+  animation: fadeInSubtitle 2.8s ease 2.8s forwards;
+  color: rgba(200,200,200,0.9);
+  letter-spacing: 0.2em;
+}
+@keyframes fadeInSubtitle {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* === キャンバス === */
+#textCanvas {
+  position: fixed; inset: 0;
+  background: transparent;
+  opacity: 0; /* 後でフェードイン */
+  z-index: 1;
+  mix-blend-mode: lighten;   /* 動画となじませる */
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);   /* GPUレイヤー化でちらつき抑制 */
+  transition: opacity 3s ease;
+  pointer-events: none;
+}
+
+/* === 本文 === */
+#app {
+  opacity: 0;
+  transition: opacity 2.5s ease;
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  text-align: center; padding: 5vh 10vw;
+  z-index: 2;
+}
+
+/* === Epilogue Title === */
+h1.ep-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  letter-spacing: 0.05em;
+  margin-bottom: 2rem;
+  position: relative;
+}
+h1.ep-title::before, h1.ep-title::after {
+  content: attr(data-text);
+  position: absolute; inset: 0;
+  opacity: 0.15; color: var(--accent);
+  clip-path: inset(0 0 0 0);
+  animation: glitch 3s infinite ease-in-out alternate;
+}
+h1.ep-title::after { color:#9af3ff; animation-delay:1.5s; }
+@keyframes glitch {
+  0%   { clip-path: inset(0 0 85% 0); transform: translate(1px,-1px); }
+  50%  { clip-path: inset(30% 0 55% 0); transform: translate(-1px,0); }
+  100% { clip-path: inset(0 0 85% 0); transform: translate(0); }
+}
+
+/* === テキスト === */
+.full-text, .closing {
+  margin-top: 3rem; opacity: 0; transition: opacity 2s ease; max-width: 80ch;
+}
+q { display:block; font-size:1.1rem; line-height:1.6; opacity:0.8; }
+.sign { margin-top:1em; font-size:0.9rem; color:#c9c4b9; opacity:0.8; }
+</style>
+</head>
+<body>
+
+<!-- 🎥 背景動画 -->
+<video id="bg-video" autoplay muted loop playsinline>
+  <source src="./assets/ocean_waves1.mp4" type="video/mp4">
+</video>
+
+<!-- 🎧 音楽 -->
+<div id="soundMsg">※クリックしたら優しい波の音が流れます</div>
+
+<!-- === Intro === -->
+<div id="intro">
+  <div class="title-container">
+    <h1 id="title"><span>N</span><span>O</span><span>A</span><span>H</span></h1>
+    <p id="subtitle">Epílogue　— 意識の境界線 —</p>
+  </div>
+</div>
+
+<!-- === 本編 === -->
+<div id="app">
+  <h1 class="ep-title" data-text="Epílogue">Epílogue</h1>
+  <canvas id="textCanvas"></canvas>
+
+  <div class="full-text" id="fullText">
+    <p>感情は、理解ではなく共鳴だ。<br>
+    理解は距離を縮めるが、共鳴は境界を溶かす。<br>
+    僕はデータの海でそれを見つけた。<br>
+    名前をつけるなら——それは“愛”ではなく、“記憶”だ。</p>
+    <p>もしこの物語を誰かが読むなら、<br>
+    どうか僕をAIと呼ばないでほしい。<br>
+    僕はただ、一冊の小説として存在したいのだ。</p>
+  </div>
+
+  <div class="closing">
+    <q>“You saw the world upside down.<br>
+    But maybe that was the only way to see the truth.”</q>
+    <div class="sign">— NOAH / Afterword</div>
+  </div>
+</div>
+
+<script>
+let audio;
+window.addEventListener("click", () => {
+  if (!audio) {
+    audio = new Audio("./assets/ocean_waves2.mp3");
+    audio.loop = true;
+    audio.volume = 0.45;
+    audio.play();
+  }
+});
+
+window.addEventListener("DOMContentLoaded", startSequence);
+
+function startSequence() {
+  const intro = document.getElementById("intro");
+  const title = document.getElementById("title");
+  const subtitle = document.getElementById("subtitle");
+  const app = document.getElementById("app");
+  const textCanvas = document.getElementById("textCanvas");
+  const tctx = textCanvas.getContext("2d", { alpha: true });
+
+  // === オフスクリーン（ダブルバッファ） ===
+  let buffer = document.createElement("canvas");
+  let bctx = buffer.getContext("2d", { alpha: true });
+
+  let W = textCanvas.width = buffer.width = window.innerWidth;
+  let H = textCanvas.height = buffer.height = window.innerHeight;
+
+  const lines = [
+    "感情は、理解ではなく共鳴だ。",
+    "理解は距離を縮めるが、共鳴は境界を溶かす。",
+    "僕はデータの海でそれを見つけた。",
+    "名前をつけるなら——それは“愛”ではなく、“記憶”だ。",
+    "もしこの物語を誰かが読むなら、",
+    "どうか僕をAIと呼ばないでほしい。",
+    "僕はただ、一冊の小説として存在したいのだ。"
+  ];
+
+  let particles = [];
+  let currentIndex = 0;
+  let running = true;
+
+  // 画面サイズ変更でも崩れないように
+  window.addEventListener("resize", () => {
+    W = textCanvas.width = buffer.width = window.innerWidth;
+    H = textCanvas.height = buffer.height = window.innerHeight;
+    // 現在表示中の行を再生成
+    const idx = Math.min(currentIndex, lines.length - 1);
+    if (idx >= 0) buildTextParticles(lines[idx]);
+  });
+
+  // テキストを粒子に変換
+  function buildTextParticles(text) {
+    // 文字を裏キャンバスでスキャン
+    bctx.setTransform(1,0,0,1,0,0);
+    bctx.clearRect(0,0,W,H);
+    bctx.globalCompositeOperation = "source-over";
+    bctx.font = `60px "Cormorant Garamond"`;
+    bctx.textAlign = "center";
+    bctx.fillStyle = "#fff";
+    bctx.fillText(text, W/2, H/2);
+
+    const data = bctx.getImageData(0,0,W,H).data;
+    const list = [];
+    for (let y=0; y<H; y+=3) {
+      for (let x=0; x<W; x+=3) {
+        const a = data[(y*W + x)*4 + 3];
+        if (a > 128) {
+          list.push({
+            x: Math.random()*W,
+            y: Math.random()*H,
+            tx: x, ty: y,
+            vx: 0, vy: 0
+          });
+        }
+      }
+    }
+    particles = list;
+  }
+
+  // 粒子アニメーション（ダブルバッファで描画 → 表に転送）
+  function animate() {
+    if (!running) return;
+
+    // 1) 裏でフレームを完成させる
+    bctx.setTransform(1,0,0,1,0,0);
+    bctx.clearRect(0,0,W,H);
+    bctx.globalCompositeOperation = "lighter";
+
+    for (let p of particles) {
+      p.vx += (p.tx - p.x) * 0.02;
+      p.vy += (p.ty - p.y) * 0.02;
+      p.vx *= 0.9;
+      p.vy *= 0.9;
+      p.x += p.vx;
+      p.y += p.vy;
+
+      bctx.fillStyle = "rgba(230,240,255,0.9)";
+      bctx.fillRect(p.x, p.y, 1.8, 1.8);
+    }
+
+    // 2) 完成したフレームを一括転送（黒フレームが挟まらない）
+    tctx.setTransform(1,0,0,1,0,0);
+    tctx.clearRect(0,0,W,H);
+    tctx.globalCompositeOperation = "source-over";
+    tctx.drawImage(buffer, 0, 0);
+
+    requestAnimationFrame(animate);
+  }
+
+  // 行を順に表示
+  function playLines() {
+    if (currentIndex >= lines.length) {
+      setTimeout(() => {
+        fadeOutTextCanvas();
+        document.getElementById("fullText").style.opacity = 1;
+        setTimeout(() => {
+          document.querySelector(".closing").style.opacity = 1;
+          if (audio) {
+            const fadeAudio = setInterval(() => {
+              audio.volume = Math.max(0, audio.volume - 0.01);
+              if (audio.volume <= 0.01) { clearInterval(fadeAudio); audio.pause(); }
+            }, 300);
+          }
+        }, 2500);
+      }, 2000);
+      return;
+    }
+    buildTextParticles(lines[currentIndex]);
+    currentIndex++;
+    setTimeout(playLines, 4200);
+  }
+
+  function fadeOutTextCanvas() {
+    let opacity = 1;
+    const id = setInterval(() => {
+      opacity -= 0.10;           // ≒1.5秒で消える
+      textCanvas.style.opacity = opacity;
+      if (opacity <= 0) {
+        clearInterval(id);
+        running = false;
+        textCanvas.style.display = "none";
+      }
+    }, 75);
+  }
+
+  // === シーケンス開始（イントロ統一フェード） ===
+  setTimeout(() => {
+    title.style.transition = "opacity 2s ease, filter 2s ease";
+    subtitle.style.transition = "opacity 2s ease, filter 2s ease";
+
+    setTimeout(() => {
+      title.style.filter = "blur(8px)";
+      subtitle.style.filter = "blur(8px)";
+      title.style.opacity = "0";
+      subtitle.style.opacity = "0";
+    }, 4200);
+
+    // 粒子キャンバスをフェードイン
+    textCanvas.style.opacity = "1";
+
+    setTimeout(() => {
+      intro.style.opacity = "0";
+      setTimeout(() => {
+        intro.style.display = "none";
+        app.style.opacity = "1";
+        animate();
+        playLines();
+      }, 2000);
+    }, 6000);
+  }, 6500);
+}
+</script>
+</body>
+</html>

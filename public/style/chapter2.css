@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1&family=Cormorant+Garamond:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#fdfaf6;
+  color:#2b2b2b;
+  font-family:"Shippori Mincho B1", serif;
+  line-height:2;
+  overflow-x:hidden;
+}
+
+/* === 背景画像 === */
+.bg-image {
+  position:fixed; inset:0;
+  background:url('/assets/bg_ch2.jpg') center/cover no-repeat;
+  filter:brightness(.72) blur(1.4px);
+  z-index:-2;
+}
+
+/* === 背景キャンバス（白モヤ演出 OFF）=== */
+canvas#ch2-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;  /* ← 背景に干渉させない */
+  pointer-events: none;
+}
+
+/* === イントロ === */
+#chapter-intro {
+  position:fixed;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  background: none;
+  opacity:1;
+transition:
+    opacity 2.8s ease,
+    transform 3.2s ease;
+}
+#chapter-intro.fade-out {
+  opacity: 0;
+  transform: translateY(60px); /* 下へ溶ける */
+}
+.intro-title span {
+  font-family:"Cormorant Garamond", serif;
+  font-size:3.8rem;
+  color:#c58d3a;
+  opacity:0;
+  animation:fadeUp 2.2s ease forwards;
+}
+.intro-title span:nth-child(1){animation-delay:.5s;}
+.intro-title span:nth-child(2){animation-delay:.7s;}
+.intro-title span:nth-child(3){animation-delay:.9s;}
+.intro-title span:nth-child(4){animation-delay:1.1s;}
+.intro-title span:nth-child(5){animation-delay:1.3s;}
+.intro-title span:nth-child(6){animation-delay:1.5s;}
+.intro-title span:nth-child(7){animation-delay:1.7s;}
+
+@keyframes fadeUp {
+  0% { opacity:0; transform:translateY(40px); }
+  100%{ opacity:1; transform:translateY(0); }
+}
+
+.intro-sub {
+  font-size:1rem;
+  color:rgba(100,80,50,.75);
+  margin-top:1em;
+  opacity:0;
+  animation:fadeIn 2s ease 2.4s forwards;
+}
+@keyframes fadeIn { to { opacity:1; } }
+
+/* 固定タイトル（本文との距離を縮める） */
+.chapter-title-fixed {
+  font-size:1rem;
+  color:#c58d3a;
+  text-shadow:
+    0 14px 38px rgba(0,0,0,0.10),
+    0 0 1px rgba(255,255,255,0.3) inset;
+  text-align:center;
+  font-family:"Cormorant Garamond", serif;
+  font-size:1.35rem;
+  margin: 10vh 0 -8vh 0; /* ← 10vh → 6vh に縮めた */
+  opacity:0;
+  transition:opacity 1.6s ease;
+}
+/* === 本文ラッパ(透明) === */
+/* 本文ラッパー：背景なし！透過のみ */
+.chapter-text {
+  background: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  border-radius: 0;
+  box-shadow: none;
+
+  padding: 0; /* ← 高さは text-box が管理 */
+  margin: 8vh auto 14vh;
+  max-width: 760px;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  font-size:1.1rem
+}
+
+/* フェードイン */
+body.ready .chapter-text {
+  opacity: 1;
+}
+
+
+/* === 紙背景カード === */
+/* === 紙背景カード（超透明＋縦長＋美構成） === */
+.text-box {
+  background: rgba(255,255,255,0.58); /* ← 透明度アップ */
+  backdrop-filter: blur(1.8px);
+  -webkit-backdrop-filter: blur(1.8px);
+
+  border-radius: 14px;
+  padding: 8vh 7%; /* ← 中央寄せ・縦長強化 */
+  margin: 18vh auto 18vh;
+
+  max-width: 670px;
+  min-height: 80vh; /* ← 美しい縦長比率 */
+
+  border:1px solid rgba(200,170,140,0.22);
+
+  /* ✅ 紙のザラつきは残す */
+  background-image:
+    radial-gradient(rgba(0,0,0,0.035) 1px, transparent 1px);
+  background-size:4px 4px;
+
+  /* ✅ 浮遊感を強調 */
+  box-shadow:
+    0 14px 38px rgba(0,0,0,0.10),
+    0 0 1px rgba(255,255,255,0.3) inset;
+
+  opacity:0;
+  transition:opacity 1.2s ease;
+}
+
+
+/* === 表示トリガー === */
+body.ready .chapter-title-fixed,
+body.ready .chapter-text,
+body.ready .text-box {
+  opacity:1;
+}
+
+/* === ノアの台詞演出 === */
+.noah {
+  color:#574c38;
+  font-family:"Fira Code", monospace;
+  font-size:1.05rem;
+}
+.noah .em {
+  display:inline-block;
+  animation:wobble 2.2s ease-in-out infinite;
+  font-weight:600;
+  color:#6b5843;
+}
+@keyframes wobble {
+  0%,100% { transform:translateY(0); opacity:1; }
+  45% { transform:translateY(-1.5px); opacity:.92; }
+  60% { transform:translateY(.8px); opacity:.95; }
+}
+
+/* === 次章リンク === */
+.next-chapter {
+  display:block;
+  text-align:center;
+  margin-top:3rem;
+  font-family:"Cormorant Garamond", serif;
+  text-decoration:none;
+  font-size:1.15rem;
+  color:#2b2b2b;
+  letter-spacing:0.07em;
+}
+.next-chapter:hover { color:#d8a764; }
+.story-break {
+  margin: 2.5em 0;
+  font-style: italic;
+  opacity: .88;
+}
+
+.thinking {
+  margin-top: 3em;
+  margin-bottom: 4.2em;
+}
+/* 本文フェードイン（ふわっと） */
+body.ready .chapter-text {
+  opacity: 1;
+  transform: translateY(0); /* ふわっと上がってくる */
+}
+
+.chapter-text {
+  transform: translateY(30px); /* 初期位置（下にズラす） */
+  transition:
+    opacity 1.8s ease,
+    transform 2.4s ease;
+}
+/* ===============================
+   📱 Responsive (スマホ最適化)
+   =============================== */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 15px;
+    line-height: 1.9;
+  }
+
+  /* === 背景 === */
+  .bg-image {
+    filter: brightness(0.85) blur(1px);
+    background-position: center top;
+    background-attachment: scroll;
+  }
+
+  /* === イントロタイトル === */
+  .intro-title span {
+    font-size: 2.4rem; /* ← 3.8rem → 2.4remに縮小 */
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .intro-sub {
+    font-size: 0.85rem;
+    margin-top: 0.8em;
+    letter-spacing: 0.1em;
+  }
+
+  /* === 固定タイトル === */
+  .chapter-title-fixed {
+    font-size: 1.05rem;
+    margin: 6vh 0 -4vh 0;
+    line-height: 1.5;
+  }
+
+  /* === 本文エリア === */
+  .chapter-text {
+    max-width: 90%;
+    margin: 6vh auto 10vh;
+    font-size: 0.95rem;
+  }
+
+  /* === 紙カード === */
+  .text-box {
+    padding: 6vh 6%;
+    margin: 10vh auto 10vh;
+    min-height: 70vh;
+    max-width: 92%;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(2px);
+  }
+
+  /* === ノアの台詞 === */
+  .noah {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    word-break: break-word;
+  }
+
+  .noah .em {
+    animation: wobble 2.4s ease-in-out infinite;
+  }
+
+  /* === 次章リンク === */
+  .next-chapter {
+    font-size: 1rem;
+    margin-top: 2.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  .story-break {
+    margin: 2em 0;
+    font-size: 0.9rem;
+  }
+
+  .thinking {
+    margin-top: 2em;
+    margin-bottom: 3em;
+  }
+}

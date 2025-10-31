@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1&family=Cormorant+Garamond:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  font-family: "Shippori Mincho B1", serif;
+  background: #f7f8fb;
+  color: #2b2b2b;
+  overflow-x: hidden;
+  line-height: 2;
+}
+
+/* === 記憶の海（背景） === */
+.memory-bg {
+  position: fixed;
+  inset: 0;
+  background: url("/assets/noah_memory_sea.jpg") center/cover no-repeat;
+  z-index: 0;
+  opacity: 1;
+  filter: brightness(1.05) contrast(1.1) saturate(1.08);
+}
+
+
+/* === 白い静寂のヴェール === */
+/* === 白い静寂のヴェール（軽く柔らかく） === */
+/* === 白い静寂のヴェール（削除済み） === */
+/* もう背景と粒子のみで構成される */
+
+.white-veil {
+  display: none !important;
+}
+
+
+/* === 粒子層 === */
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* === イントロ演出 === */
+#chapter-intro {
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,0.9);
+  z-index: 3;
+  animation: introFade 6s ease forwards;
+}
+@keyframes introFade {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+.intro-title { display: flex; gap: 0.2em; }
+.intro-title .c {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 3.4rem;
+  letter-spacing: 0.1em;
+  color: #6b79ff;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: floatChar 1.3s ease forwards;
+}
+.intro-title .c:nth-child(1){ animation-delay: 0.3s; }
+.intro-title .c:nth-child(2){ animation-delay: 0.5s; }
+@keyframes floatChar {
+  to { opacity: 1; transform: translateY(0); }
+}
+.intro-sub {
+  font-family: "Cormorant Garamond", serif;
+  margin-top: 1rem;
+  color: rgba(50,60,120,0.6);
+  opacity: 0;
+  animation: fadeSub 1.2s ease 0.9s forwards;
+}
+@keyframes fadeSub { to { opacity: 1; } }
+
+/* === 本文 === */
+.chapter {
+  position: relative;
+  z-index: 4;
+  max-width: 720px;
+  margin: 16vh auto 14vh;
+  padding: 3rem 6%;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(6px);
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(80,110,180,0.15);
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeInText 1.6s ease 5.4s forwards;
+}
+@keyframes fadeInText {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === 段落フェード === */
+.f { opacity: 0; transform: translateY(8px); }
+.f.show {
+  opacity: 1; transform: translateY(0);
+  transition: opacity 900ms ease, transform 900ms ease;
+}
+
+/* === ノアの声 === */
+.noah {
+  color: #6a8dff;
+  font-family: "Fira Code", monospace;
+  text-shadow: 0 0 8px rgba(150,170,255,0.45);
+}
+
+/* === システムログ === */
+.sys {
+  color: #5b6a86;
+  font-family: "Fira Code", monospace;
+  font-size: 0.95rem;
+}
+
+/* === 次章リンク === */
+.next-chapter {
+  display: block;
+  text-align: center;
+  margin-top: 3rem;
+  font-family: "Cormorant Garamond", serif;
+  color: rgba(40,50,90,0.6);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: 0.35s ease;
+}
+.next-chapter:hover {
+  color: #25305a;
+  text-shadow: 0 0 10px rgba(150,170,255,0.35);
+}
+/* ===============================
+   📱 Responsive (スマホ最適化)
+   =============================== */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 15px;
+    line-height: 1.8;
+    background: #f8f9fb;
+  }
+
+  /* === 背景 === */
+  .memory-bg {
+    background-position: center top;
+    filter: brightness(1) contrast(1.05) saturate(1.05);
+    background-attachment: scroll;
+  }
+
+  /* === イントロ === */
+  .intro-title .c {
+    font-size: 2.2rem; /* ← 3.4rem → 2.2rem */
+    letter-spacing: 0.05em;
+  }
+
+  .intro-sub {
+    font-size: 0.9rem;
+    margin-top: 0.6rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* === 本文 === */
+  .chapter {
+    max-width: 90%;
+    margin: 10vh auto 8vh;
+    padding: 2rem 5%;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(3px);
+    border-radius: 12px;
+    box-shadow: 0 6px 25px rgba(80,110,180,0.12);
+  }
+
+  /* === 段落 === */
+  .f {
+    line-height: 1.9;
+    letter-spacing: 0.03em;
+  }
+
+  /* === ノアの声 === */
+  .noah {
+    font-size: 0.9rem;
+    color: #4c68d9;
+    text-shadow: 0 0 6px rgba(130,150,255,0.35);
+  }
+
+  /* === システムログ === */
+  .sys {
+    font-size: 0.9rem;
+    color: #5b6a86;
+    opacity: 0.9;
+  }
+
+  /* === 次章リンク === */
+  .next-chapter {
+    font-size: 1rem;
+    margin-top: 2.5rem;
+    letter-spacing: 0.05em;
+  }
+}
