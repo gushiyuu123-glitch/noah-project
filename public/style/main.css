@@ -208,7 +208,7 @@ canvas#noah-bg {
 
   /* === ボタン === */
   .enter-btn {
-    bottom: 8vh;
+    bottom: 15vh;
     font-size: 1rem;
     letter-spacing: 0.05em;
   }
@@ -229,5 +229,49 @@ canvas#noah-bg {
   @keyframes gather {
     0% { opacity: 0; transform: scale(1.1); }
     100% { opacity: 1; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); }
+  }
+}
+/* ===============================
+   📱 SmartPhone Optimization
+   =============================== */
+@media (max-width: 768px) {
+  body {
+    line-height: 1.9;
+    font-size: 0.95rem;
+    overflow-x: hidden;
+  }
+
+  .chapter-text {
+    max-width: 92%;
+    padding: 10vh 5% 12vh;
+    font-size: 0.95rem;
+  }
+
+  .chapter-title,
+  .chapter-title-fixed {
+    font-size: 1.5rem !important;
+    top: 8vh;
+  }
+
+  .intro-title span {
+    font-size: 2.2rem !important;
+  }
+
+  .intro-sub {
+    font-size: 0.85rem;
+  }
+
+  .next-chapter {
+    font-size: 1rem;
+    margin-top: 3rem;
+  }
+
+  /* 背景トリミング防止 */
+  .bg-image,
+  .memory-bg,
+  .bg-lab {
+    background-position: center center !important;
+    background-size: contain !important; /* cover → contain */
+    filter: brightness(0.9) contrast(1.05);
   }
 }
