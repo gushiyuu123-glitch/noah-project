@@ -241,3 +241,35 @@ canvas#noah-bg {
     background-position: center center !important;
   }
 }
+/* =====================================================
+   ✅ ボタンを本文の一番下に配置（スマホ・PC両対応）
+   ===================================================== */
+
+.enter-btn {
+  position: relative; /* ← fixedやabsoluteを解除 */
+  display: block;
+  text-align: center;
+  margin: 10vh auto 8vh; /* ← 下に余白を確保して自然に */
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-align: center;
+  z-index: 5;
+  opacity: 0;
+  animation: fadeInBtn 3s ease 6s forwards, pulse 6s ease-in-out infinite 9s;
+}
+
+/* スマホ版で余白をさらに確保 */
+@media (max-width: 768px) {
+  .intro-text {
+    padding-bottom: 24vh; /* ← ボタン領域分の余白を確保 */
+  }
+  .enter-btn {
+    margin-top: 12vh;
+    margin-bottom: 16vh; /* ← さらに下にスペース */
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+  }
+}
