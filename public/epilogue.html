@@ -153,6 +153,109 @@ h1.ep-title::after { color:#9af3ff; animation-delay:1.5s; }
 }
 q { display:block; font-size:1.1rem; line-height:1.6; opacity:0.8; }
 .sign { margin-top:1em; font-size:0.9rem; color:#c9c4b9; opacity:0.8; }
+/* =====================================================
+   📱 Epílogue Responsive Optimization – by Noa × Yuto
+   ===================================================== */
+@media (max-width: 768px) {
+  html, body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    background: var(--bg);
+  }
+
+  /* 🎥 背景映像を安定化（画面いっぱい・軽量） */
+  #bg-video {
+    object-fit: cover;
+    filter: brightness(0.85) contrast(1.05);
+    opacity: 0.4;
+    position: fixed;
+  }
+
+  /* 🎧 サウンドメッセージ */
+  #soundMsg {
+    font-size: 0.8rem;
+    right: 1rem;
+    bottom: 1rem;
+    padding: 0.4em 0.8em;
+    background: rgba(0,0,0,0.4);
+    border-radius: 6px;
+  }
+
+  /* 🩵 タイトル／サブタイトル */
+  #title {
+    font-size: 2.4rem;
+    letter-spacing: 0.15em;
+  }
+  #subtitle {
+    font-size: 0.9rem;
+    margin-top: -2rem;
+    letter-spacing: 0.15em;
+  }
+
+  /* ✨ 粒子キャンバス */
+  #textCanvas {
+    opacity: 0.7;
+    mix-blend-mode: lighten;
+  }
+
+  /* 🕊 本文領域 */
+  #app {
+    padding: 10vh 6vw 12vh;
+    text-align: left;
+    line-height: 1.85;
+  }
+
+  /* 🩶 Epilogueタイトル */
+  .ep-title {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* 💬 本文テキスト */
+  .full-text {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    margin-top: 2rem;
+    opacity: 1 !important;
+  }
+  .full-text p {
+    margin-bottom: 1.8em;
+  }
+
+  /* 🕯 引用と署名 */
+  .closing q {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    text-align: center;
+    display: block;
+    margin-top: 4vh;
+  }
+  .sign {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* 🎞 イントロ */
+  #intro {
+    align-items: flex-start;
+    padding-top: 25vh;
+  }
+  .title-container {
+    width: 100%;
+    padding: 0 8vw;
+  }
+
+  /* ⚡ グリッチタイトル軽量化（負荷軽減） */
+  .ep-title::before,
+  .ep-title::after {
+    display: none; /* スマホでは非表示で軽くする */
+  }
+}
+
 </style>
 </head>
 <body>
