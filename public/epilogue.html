@@ -470,30 +470,7 @@ function startSequence() {
     }, 6000);
   }, 6500);
 }
-/* =====================================================
-   🎧 モバイル音声修正パッチ
-   ===================================================== */
-window.addEventListener("touchstart", () => {
-  if (!audio) {
-    audio = new Audio("./assets/ocean_waves2.mp3");
-    audio.loop = true;
-    audio.volume = 0.45;
-    audio.play().catch(() => {
-      console.warn("Autoplay blocked. Tap again to start audio.");
-    });
-  }
-}, { once: true });
 
-/* =====================================================
-   📱 モバイル用キャンバスリサイズ補正
-   ===================================================== */
-window.addEventListener("resize", () => {
-  const c = document.getElementById("textCanvas");
-  if (c) {
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
-  }
-});
 </script>
 </body>
 </html>
