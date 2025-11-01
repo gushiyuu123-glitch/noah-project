@@ -154,101 +154,67 @@ h1.ep-title::after { color:#9af3ff; animation-delay:1.5s; }
 q { display:block; font-size:1.1rem; line-height:1.6; opacity:0.8; }
 .sign { margin-top:1em; font-size:0.9rem; color:#c9c4b9; opacity:0.8; }
 /* =====================================================
-   📱 Epílogue Responsive Optimization – by Noa × Yuto (Final)
+   📱 Epílogue Responsive Optimization – by Noa × Yuto
    ===================================================== */
 @media (max-width: 768px) {
   html, body {
-    height: auto !important;
-    overflow-x: hidden !important;
     overflow-y: auto !important;
-    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden !important;
+    height: auto !important;
     background: var(--bg);
   }
 
-  /* 🎥 背景映像 */
+  /* 🎥 背景映像を安定化（画面いっぱい・軽量） */
   #bg-video {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
     object-fit: cover;
-    object-position: center;
-    opacity: 0.4;
     filter: brightness(0.85) contrast(1.05);
-    z-index: -3;
-    pointer-events: none;
+    opacity: 0.4;
+    position: fixed;
   }
 
   /* 🎧 サウンドメッセージ */
   #soundMsg {
-    position: fixed;
+    font-size: 0.8rem;
     right: 1rem;
     bottom: 1rem;
-    font-size: 0.8rem;
-    padding: 0.45em 0.9em;
-    background: rgba(0,0,0,0.45);
+    padding: 0.4em 0.8em;
+    background: rgba(0,0,0,0.4);
     border-radius: 6px;
-    z-index: 50;
   }
 
-  /* 🌌 イントロタイトル */
-  #intro {
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0;
-  }
+  /* 🩵 タイトル／サブタイトル */
   #title {
-    font-size: 2.5rem;
-    letter-spacing: 0.1em;
-    text-align: center;
+    font-size: 2.4rem;
+    letter-spacing: 0.15em;
   }
   #subtitle {
     font-size: 0.9rem;
-    margin-top: 0.8rem;
+    margin-top: -2rem;
     letter-spacing: 0.15em;
-    color: rgba(230,230,230,0.85);
-    text-align: center;
   }
 
-  /* ✨ 粒子キャンバス中央固定 */
+  /* ✨ 粒子キャンバス */
   #textCanvas {
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    width: 100vw !important;
-    height: 100vh !important;
     opacity: 0.7;
     mix-blend-mode: lighten;
-    z-index: 1;
-    pointer-events: none;
   }
 
-  /* 🕊 本文ブロック */
+  /* 🕊 本文領域 */
   #app {
-    position: relative;
-    margin: 0 auto;
-    padding: 12vh 6vw 20vh;
+    padding: 10vh 6vw 12vh;
     text-align: left;
-    line-height: 1.9;
-    font-size: 0.95rem;
-    max-width: 88%;
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    z-index: 5;
+    line-height: 1.85;
   }
 
   /* 🩶 Epilogueタイトル */
   .ep-title {
-    font-size: 1.8rem !important;
+    font-size: 1.8rem;
     text-align: center;
-    color: #f3f3f3;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.45);
-    margin-bottom: 2.4rem;
-    letter-spacing: 0.06em;
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.05em;
   }
 
-  /* 📝 本文テキスト */
+  /* 💬 本文テキスト */
   .full-text {
     font-size: 0.95rem;
     line-height: 1.9;
@@ -256,12 +222,12 @@ q { display:block; font-size:1.1rem; line-height:1.6; opacity:0.8; }
     opacity: 1 !important;
   }
   .full-text p {
-    margin-bottom: 1.6em;
+    margin-bottom: 1.8em;
   }
 
-  /* 🕯 引用＋署名 */
+  /* 🕯 引用と署名 */
   .closing q {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     opacity: 0.9;
     text-align: center;
     display: block;
@@ -270,25 +236,23 @@ q { display:block; font-size:1.1rem; line-height:1.6; opacity:0.8; }
   .sign {
     text-align: center;
     margin-top: 1rem;
-    font-size: 0.8rem;
-    color: #cfcfcf;
+    font-size: 0.85rem;
   }
 
-  /* ⚡ グリッチ演出OFF（軽量化） */
+  /* 🎞 イントロ */
+  #intro {
+    align-items: flex-start;
+    padding-top: 25vh;
+  }
+  .title-container {
+    width: 100%;
+    padding: 0 8vw;
+  }
+
+  /* ⚡ グリッチタイトル軽量化（負荷軽減） */
   .ep-title::before,
   .ep-title::after {
-    display: none !important;
-  }
-
-  /* 🎬 イントロ演出調整（粒子と競合しない） */
-  .title-container {
-    padding: 0 8vw;
-    width: 100%;
-  }
-
-  /* 📱 スクロール時の安全余白 */
-  .closing {
-    margin-bottom: 12vh;
+    display: none; /* スマホでは非表示で軽くする */
   }
 }
 
