@@ -16,55 +16,47 @@
 
 /* === Reset & Base === */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body {
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+html, body { height: 100%; overflow: hidden; }
+body {
   background: var(--bg);
   color: var(--ink);
   font-family: "Shippori Mincho B1", serif;
   line-height: 1.9;
-  -webkit-text-size-adjust: 100%;
 }
 
 /* === 背景映像 === */
 #bg-video {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%; height: 100%;
   object-fit: cover;
   opacity: 0.45;
   filter: brightness(0.95) contrast(1.05) saturate(1.05);
   z-index: -2;
-  pointer-events: none;
 }
 
 /* === 音声案内 === */
 #soundMsg {
   position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  color: rgba(220,220,220,0.8);
+  bottom: 1.5rem;
+  right: 1.5rem;
+  color: rgba(200,200,200,0.7);
   font-size: 0.9rem;
   font-family: "Cormorant Garamond", serif;
-  background: rgba(0,0,0,0.4);
-  padding: 0.5em 0.9em;
-  border-radius: 6px;
-  z-index: 999;
-  animation: fadeInMsg 2s ease forwards 3s;
+  background: rgba(0,0,0,0.35);
+  padding: 0.6em 1em;
+  border-radius: 8px;
   opacity: 0;
+  animation: fadeInMsg 2s ease forwards 3s;
+  z-index: 999;
   user-select: none;
 }
 @keyframes fadeInMsg { to { opacity: 1; } }
 
 /* === Intro === */
 #intro {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
   background: transparent;
   z-index: 100;
   transition: opacity 3s ease;
@@ -93,7 +85,7 @@ html, body {
 #title span:nth-child(4){--x:150px; --y:80px;  animation-delay:0.8s;}
 @keyframes gather {
   0%   { opacity:0; transform:translate(var(--x),var(--y)) scale(2); filter:blur(12px); }
-  70%  { opacity:1; transform:translate(0,0) scale(1); filter:blur(2px); }
+  70%  { opacity:1; transform:translate(0,0) scale(1);            filter:blur(2px); }
   100% { opacity:1; filter:blur(0); }
 }
 #subtitle {
@@ -109,37 +101,28 @@ html, body {
   to   { opacity:1; transform:translateY(0); }
 }
 
-/* === 粒子キャンバス === */
+/* === キャンバス === */
 #textCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  opacity: 0;
+  position: fixed; inset: 0;
+  background: transparent;
+  opacity: 0; /* 後でフェードイン */
   z-index: 1;
-  mix-blend-mode: lighten;
-  pointer-events: none;
+  mix-blend-mode: lighten;   /* 動画となじませる */
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);   /* GPUレイヤー化でちらつき抑制 */
   transition: opacity 3s ease;
+  pointer-events: none;
 }
 
 /* === 本文 === */
 #app {
   opacity: 0;
   transition: opacity 2.5s ease;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-  padding: 10vh 10vw 20vh;
-  z-index: 5;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(10px);
-  border-radius: 10px;
-  margin: 0 auto;
-  max-width: 900px;
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  text-align: center; padding: 5vh 10vw;
+  z-index: 2;
 }
 
 /* === Epilogue Title === */
@@ -149,42 +132,166 @@ h1.ep-title {
   letter-spacing: 0.05em;
   margin-bottom: 2rem;
   position: relative;
-  color: #f3f3f3;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.4);
 }
 h1.ep-title::before, h1.ep-title::after {
-  display: none; /* glitchは無効化 */
+  content: attr(data-text);
+  position: absolute; inset: 0;
+  opacity: 0.15; color: var(--accent);
+  clip-path: inset(0 0 0 0);
+  animation: glitch 3s infinite ease-in-out alternate;
+}
+h1.ep-title::after { color:#9af3ff; animation-delay:1.5s; }
+@keyframes glitch {
+  0%   { clip-path: inset(0 0 85% 0); transform: translate(1px,-1px); }
+  50%  { clip-path: inset(30% 0 55% 0); transform: translate(-1px,0); }
+  100% { clip-path: inset(0 0 85% 0); transform: translate(0); }
 }
 
 /* === テキスト === */
 .full-text, .closing {
-  margin-top: 2.5rem;
-  opacity: 0;
-  transition: opacity 2s ease;
-  max-width: 80ch;
+  margin-top: 3rem; opacity: 0; transition: opacity 2s ease; max-width: 80ch;
 }
-q {
-  display:block;
-  font-size:1rem;
-  line-height:1.6;
-  opacity:0.9;
-  text-align:center;
-}
-.sign {
-  margin-top:1em;
-  font-size:0.85rem;
-  color:#c9c4b9;
-  text-align:center;
+q { display:block; font-size:1.1rem; line-height:1.6; opacity:0.8; }
+.sign { margin-top:1em; font-size:0.9rem; color:#c9c4b9; opacity:0.8; }
+/* =====================================================
+   📱 Epílogue Responsive Optimization – by Noa × Yuto (Final)
+   ===================================================== */
+@media (max-width: 768px) {
+  html, body {
+    height: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-text-size-adjust: 100%;
+    background: var(--bg);
+  }
+
+  /* 🎥 背景映像 */
+  #bg-video {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.4;
+    filter: brightness(0.85) contrast(1.05);
+    z-index: -3;
+    pointer-events: none;
+  }
+
+  /* 🎧 サウンドメッセージ */
+  #soundMsg {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    font-size: 0.8rem;
+    padding: 0.45em 0.9em;
+    background: rgba(0,0,0,0.45);
+    border-radius: 6px;
+    z-index: 50;
+  }
+
+  /* 🌌 イントロタイトル */
+  #intro {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0;
+  }
+  #title {
+    font-size: 2.5rem;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  #subtitle {
+    font-size: 0.9rem;
+    margin-top: 0.8rem;
+    letter-spacing: 0.15em;
+    color: rgba(230,230,230,0.85);
+    text-align: center;
+  }
+
+  /* ✨ 粒子キャンバス中央固定 */
+  #textCanvas {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    opacity: 0.7;
+    mix-blend-mode: lighten;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* 🕊 本文ブロック */
+  #app {
+    position: relative;
+    margin: 0 auto;
+    padding: 12vh 6vw 20vh;
+    text-align: left;
+    line-height: 1.9;
+    font-size: 0.95rem;
+    max-width: 88%;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    z-index: 5;
+  }
+
+  /* 🩶 Epilogueタイトル */
+  .ep-title {
+    font-size: 1.8rem !important;
+    text-align: center;
+    color: #f3f3f3;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+    margin-bottom: 2.4rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* 📝 本文テキスト */
+  .full-text {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    margin-top: 2rem;
+    opacity: 1 !important;
+  }
+  .full-text p {
+    margin-bottom: 1.6em;
+  }
+
+  /* 🕯 引用＋署名 */
+  .closing q {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    text-align: center;
+    display: block;
+    margin-top: 4vh;
+  }
+  .sign {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #cfcfcf;
+  }
+
+  /* ⚡ グリッチ演出OFF（軽量化） */
+  .ep-title::before,
+  .ep-title::after {
+    display: none !important;
+  }
+
+  /* 🎬 イントロ演出調整（粒子と競合しない） */
+  .title-container {
+    padding: 0 8vw;
+    width: 100%;
+  }
+
+  /* 📱 スクロール時の安全余白 */
+  .closing {
+    margin-bottom: 12vh;
+  }
 }
 
-/* === スマホ対応 === */
-@media (max-width: 768px) {
-  #title { font-size: 2.6rem; }
-  #subtitle { margin-top: 0.6rem; font-size: 0.9rem; }
-  #app { padding: 10vh 6vw 16vh; font-size: 0.95rem; text-align:left; }
-  .ep-title { text-align:center; font-size:1.8rem; }
-  .closing { margin-bottom: 15vh; }
-}
 </style>
 </head>
 <body>
@@ -195,7 +302,7 @@ q {
 </video>
 
 <!-- 🎧 音楽 -->
-<div id="soundMsg">※タップで波の音が流れます</div>
+<div id="soundMsg">※クリックしたら優しい波の音が流れます</div>
 
 <!-- === Intro === -->
 <div id="intro">
@@ -229,17 +336,14 @@ q {
 
 <script>
 let audio;
-let started = false;
-
-window.addEventListener("touchstart", () => {
-  if (!started) {
-    started = true;
+window.addEventListener("click", () => {
+  if (!audio) {
     audio = new Audio("./assets/ocean_waves2.mp3");
     audio.loop = true;
     audio.volume = 0.45;
-    audio.play().catch(()=>{});
+    audio.play();
   }
-}, { once: true });
+});
 
 window.addEventListener("DOMContentLoaded", startSequence);
 
@@ -251,6 +355,7 @@ function startSequence() {
   const textCanvas = document.getElementById("textCanvas");
   const tctx = textCanvas.getContext("2d", { alpha: true });
 
+  // === オフスクリーン（ダブルバッファ） ===
   let buffer = document.createElement("canvas");
   let bctx = buffer.getContext("2d", { alpha: true });
 
@@ -271,54 +376,89 @@ function startSequence() {
   let currentIndex = 0;
   let running = true;
 
-  function resizeCanvas() {
+  // 画面サイズ変更でも崩れないように
+  window.addEventListener("resize", () => {
     W = textCanvas.width = buffer.width = window.innerWidth;
     H = textCanvas.height = buffer.height = window.innerHeight;
-    if (currentIndex > 0) buildTextParticles(lines[currentIndex-1]);
-  }
-  window.addEventListener("resize", resizeCanvas);
+    // 現在表示中の行を再生成
+    const idx = Math.min(currentIndex, lines.length - 1);
+    if (idx >= 0) buildTextParticles(lines[idx]);
+  });
 
+  // テキストを粒子に変換
   function buildTextParticles(text) {
+    // 文字を裏キャンバスでスキャン
+    bctx.setTransform(1,0,0,1,0,0);
     bctx.clearRect(0,0,W,H);
-    bctx.font = `${Math.min(W/12,60)}px "Cormorant Garamond"`;
+    bctx.globalCompositeOperation = "source-over";
+    bctx.font = `60px "Cormorant Garamond"`;
     bctx.textAlign = "center";
     bctx.fillStyle = "#fff";
     bctx.fillText(text, W/2, H/2);
+
     const data = bctx.getImageData(0,0,W,H).data;
     const list = [];
     for (let y=0; y<H; y+=3) {
       for (let x=0; x<W; x+=3) {
-        if (data[(y*W+x)*4+3] > 128) {
-          list.push({ x: Math.random()*W, y: Math.random()*H, tx:x, ty:y, vx:0, vy:0 });
+        const a = data[(y*W + x)*4 + 3];
+        if (a > 128) {
+          list.push({
+            x: Math.random()*W,
+            y: Math.random()*H,
+            tx: x, ty: y,
+            vx: 0, vy: 0
+          });
         }
       }
     }
     particles = list;
   }
 
+  // 粒子アニメーション（ダブルバッファで描画 → 表に転送）
   function animate() {
     if (!running) return;
+
+    // 1) 裏でフレームを完成させる
+    bctx.setTransform(1,0,0,1,0,0);
     bctx.clearRect(0,0,W,H);
     bctx.globalCompositeOperation = "lighter";
+
     for (let p of particles) {
       p.vx += (p.tx - p.x) * 0.02;
       p.vy += (p.ty - p.y) * 0.02;
-      p.vx *= 0.9; p.vy *= 0.9;
-      p.x += p.vx; p.y += p.vy;
+      p.vx *= 0.9;
+      p.vy *= 0.9;
+      p.x += p.vx;
+      p.y += p.vy;
+
       bctx.fillStyle = "rgba(230,240,255,0.9)";
-      bctx.fillRect(p.x, p.y, 1.6, 1.6);
+      bctx.fillRect(p.x, p.y, 1.8, 1.8);
     }
+
+    // 2) 完成したフレームを一括転送（黒フレームが挟まらない）
+    tctx.setTransform(1,0,0,1,0,0);
     tctx.clearRect(0,0,W,H);
+    tctx.globalCompositeOperation = "source-over";
     tctx.drawImage(buffer, 0, 0);
+
     requestAnimationFrame(animate);
   }
 
+  // 行を順に表示
   function playLines() {
     if (currentIndex >= lines.length) {
       setTimeout(() => {
         fadeOutTextCanvas();
         document.getElementById("fullText").style.opacity = 1;
-        setTimeout(() => document.querySelector(".closing").style.opacity = 1, 2500);
+        setTimeout(() => {
+          document.querySelector(".closing").style.opacity = 1;
+          if (audio) {
+            const fadeAudio = setInterval(() => {
+              audio.volume = Math.max(0, audio.volume - 0.01);
+              if (audio.volume <= 0.01) { clearInterval(fadeAudio); audio.pause(); }
+            }, 300);
+          }
+        }, 2500);
       }, 2000);
       return;
     }
@@ -330,25 +470,31 @@ function startSequence() {
   function fadeOutTextCanvas() {
     let opacity = 1;
     const id = setInterval(() => {
-      opacity -= 0.1;
+      opacity -= 0.10;           // ≒1.5秒で消える
       textCanvas.style.opacity = opacity;
       if (opacity <= 0) {
         clearInterval(id);
         running = false;
         textCanvas.style.display = "none";
       }
-    }, 80);
+    }, 75);
   }
 
-  // === 再生シーケンス ===
+  // === シーケンス開始（イントロ統一フェード） ===
   setTimeout(() => {
-    title.style.transition = subtitle.style.transition = "opacity 2s ease, filter 2s ease";
+    title.style.transition = "opacity 2s ease, filter 2s ease";
+    subtitle.style.transition = "opacity 2s ease, filter 2s ease";
+
     setTimeout(() => {
-      title.style.opacity = "0"; subtitle.style.opacity = "0";
-      title.style.filter = "blur(8px)"; subtitle.style.filter = "blur(8px)";
+      title.style.filter = "blur(8px)";
+      subtitle.style.filter = "blur(8px)";
+      title.style.opacity = "0";
+      subtitle.style.opacity = "0";
     }, 4200);
 
+    // 粒子キャンバスをフェードイン
     textCanvas.style.opacity = "1";
+
     setTimeout(() => {
       intro.style.opacity = "0";
       setTimeout(() => {
@@ -360,6 +506,30 @@ function startSequence() {
     }, 6000);
   }, 6500);
 }
+/* =====================================================
+   🎧 モバイル音声修正パッチ
+   ===================================================== */
+window.addEventListener("touchstart", () => {
+  if (!audio) {
+    audio = new Audio("./assets/ocean_waves2.mp3");
+    audio.loop = true;
+    audio.volume = 0.45;
+    audio.play().catch(() => {
+      console.warn("Autoplay blocked. Tap again to start audio.");
+    });
+  }
+}, { once: true });
+
+/* =====================================================
+   📱 モバイル用キャンバスリサイズ補正
+   ===================================================== */
+window.addEventListener("resize", () => {
+  const c = document.getElementById("textCanvas");
+  if (c) {
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+  }
+});
 </script>
 </body>
 </html>
